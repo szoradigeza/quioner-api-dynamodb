@@ -73,6 +73,50 @@ r = requests.post(f"{base_url}/question/editquestion",
 }, headers=headers)
 print(r.content)
 """
+
+r = requests.post(f"{base_url}/question/editquestion", 
+    json={
+   "question_id": "f63f7608-b265-11eb-a6ee-80a589ca1337",
+   "question":{
+      "correctAnswerNum":[
+         1
+      ],
+      "name":"C-Test_Size_of_array",
+      "description":"The total memory required for an array",
+      "difficulty":"1",
+      "answers":[
+         {
+            "id":"None",
+            "question_id":"None",
+            "answer":"Sizeof (datatype) * 2",
+            "correct":"None"
+         },
+         {
+            "id":"None",
+            "question_id":"None",
+            "answer":"Sizeof (datatype) * sizeof array",
+            "correct":"None"
+         },
+         {
+            "id":"None",
+            "question_id":"None",
+            "answer":"Size of (datatype) * size of used array elements",
+            "correct":"None"
+         },
+         {
+            "id":"None",
+            "question_id":"None",
+            "answer":"Size of (array) * datatype",
+            "correct":"None"
+         }
+      ],
+      "category_id":"2",
+      "image":"None",
+      "reviewed":1
+   }
+}, headers=headers)
+print(r.content)
+
 r = requests.post(f"{base_url}/question/delete-question", 
     json={
       "question_id": "0ac28bb0-ace4-11eb-bc3e-ca3fc8fc7c00"
@@ -85,7 +129,16 @@ print(r.content)
 
 r = requests.post(f"{base_url}/question/newcategory", 
     json={
-      "categoryname": "category1"
+      "categoryname": "category2"
     }
 , headers=headers)
+print(r.content)
+
+
+#TEST get categories
+r = requests.get(f"{base_url}/question/questioncategories")
+print(r.content)
+
+#TEST get reviewed questions
+r = requests.get(f"{base_url}/question/reviewed")
 print(r.content)

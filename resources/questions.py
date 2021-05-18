@@ -6,7 +6,7 @@ from flask import jsonify
 from boto3.dynamodb.conditions import Key
 import uuid
 from models.question import QuestionModel
-
+from flask import send_file
 
 
 def handle_add_question(request):
@@ -84,12 +84,24 @@ def handle_diff_by_num(request):
 def handle_generate_test(request):
     pass
 
-def handle_get_question_categories(request):
-    pass
+def handle_get_question_categories():
+    try:
+        category_table = ddb.Table('category')
+        categories = category_table.scan()['Items']
+        return json_response(categories)
+    except Exception as e:
+        return json_response({"message": e})
 
 
 def handle_create_new_question_category(request):
     categoryname = request.get_json(force=True)['categoryname']
+    #Check that category not exist    
+    table = ddb.Table('category')
+    key = {'name': categoryname}
+    is_category = table.get_item(Key=key)
+    if is_category.get('Item'):
+        return json_response({"message": "Category already exist!"})
+
     table = ddb.Table('category')
     table.put_item(Item={
         'id': str(uuid.uuid1()),
@@ -98,19 +110,42 @@ def handle_create_new_question_category(request):
     return json_response({"message": "category has been added!"})
 
 def handle_add_question_image(request):
-    pass
+    #TODO maybe need to rework
+    try:
+      static_file = request.files['image']
+      fileName = secure_filename(static_file.filename)
+      if os.path.exists('image/' + fileName):
+        i = 1
+        splitName = fileName.split('.')
+        fileName = splitName[0] + str(i) + '.' + splitName[1]
+        while os.path.exists('image/' + fileName):
+          fileName = splitName[0] + str(i) + '.' + splitName[1]
+          i += 1
+        static_file.save(os.path.join('Image', fileName))
+      else:
+        static_file.save(os.path.join('Image', fileName))
+      return {'fileName': fileName}
+    except Exception as e:
+        return json_response({"message": e})
 
 def handle_get_question_image(request):
-    pass
+    return send_file('Image/' + filename)
 
 def handle_post_similar_question(request):
+    #TODO maybe don't necessary
     pass
 
 def handle_sort_questions_by_category(request):
+    #TODO maybe don't necessary
     pass
 
-def handle_get_reviewed_questions(request):
-    pass
+def handle_get_reviewed_questions():
+    questions = QuestionModel.get_all_question()
+    reviewed_questions = []
+    for question in questions:
+        if question['reviewed'] == 1:
+            reviewed_questions.append(question)
+    return json_response(reviewed_questions) 
 
 def handle_get_unreviewed_questions(request):
     pass

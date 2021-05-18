@@ -93,3 +93,16 @@ def get_list_questions():
 @app.route('/question/newcategory', methods=['POST'])
 def post_new_category():
     return handle_create_new_question_category(request)
+
+@app.route('/question/image-upload', methods=['POST'])
+def post_upload_question_image():
+    return handle_add_question_image(request)
+
+@app.route('/question/image/<filename>', methods=['GET'])
+def get_question_image():
+    return handle_get_question_image(request)
+
+
+@app.route('/question/reviewed', methods=['GET'])
+def get_reviewed_questions():
+    return handle_get_reviewed_questions()
