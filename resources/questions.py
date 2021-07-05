@@ -148,5 +148,10 @@ def handle_get_reviewed_questions():
     return json_response(reviewed_questions) 
 
 def handle_get_unreviewed_questions(request):
-    pass
+    questions = QuestionModel.get_all_question()
+    unreviewed_questions = []
+    for question in questions:
+        if question['reviewed'] == 0:
+            unreviewed_questions.append(question)
+    return json_response(reviewed_questions) 
 

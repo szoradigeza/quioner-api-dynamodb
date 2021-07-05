@@ -106,3 +106,7 @@ def get_question_image():
 @app.route('/question/reviewed', methods=['GET'])
 def get_reviewed_questions():
     return handle_get_reviewed_questions()
+
+@app.route('/question/unreviewed', methods=['GET'])
+def get_reviewed_questions():
+    return handle_get_unreviewed_questions()
